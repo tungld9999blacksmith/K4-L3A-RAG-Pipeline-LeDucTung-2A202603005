@@ -15,6 +15,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from pageindex import PageIndexClient
+
 
 load_dotenv()
 
@@ -124,7 +126,7 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
             print(f"Document {doc_id} is not ready for retrieval. Skipping.")
             continue
 
-        response = client.submit_query(doc_id = doc_id, query=query)
+        response = page_idx_client.submit_query(doc_id = doc_id, query=query)
 
         content = _extract_content(response)
 
@@ -152,12 +154,6 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
     for index, result in enumerate(results):
         result["score"] = float(total-index)
     return results
-
-       
-
-
-                
-        
 
 
 if __name__ == "__main__":

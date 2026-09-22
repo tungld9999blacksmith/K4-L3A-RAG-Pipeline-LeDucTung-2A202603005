@@ -11,6 +11,8 @@ Lưu ý: RRF score chỉ phản ánh thứ hạng, không dùng để quyết đ
 
 import numpy as np
 
+from typing import Tuple
+
 def rerank_rrf(
     ranked_lists: list[list[dict]],
     top_k: int = 5,
@@ -61,13 +63,23 @@ def rerank_rrf(
     else:
         top_k_indicies = np.argsort(-sum_tensors)
 
+    def retrieve_remain_fields(doc_id: str) -> Tuple[str, dict]:
+        for ranked_row in ranked_lists:
+            for item in ranked_row:
+                if item["id"] == doc_id:
+                    return item["content"], item["metadata"]
+        return "", {}
+
+    remain_content = {doc_id: retrieve_remain_fields(doc_id) for doc_id in top_k_indicies}
+
     results = [
         {
             "id": idx2doc[item_id],
             "score": sum_tensors[item_id],
             "retrieval_method": "hybrid",
+            "content": remain_content[item_id][0],
+            "metadata": remain_content[item_id][1],
         }
-
         for item_id in top_k_indicies
     ]
     return results
