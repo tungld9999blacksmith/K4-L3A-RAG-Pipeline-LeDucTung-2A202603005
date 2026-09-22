@@ -1,14 +1,112 @@
 """
+
 Task 6 — Lexical search bằng BM25.
 
+
 Dùng cùng corpus chunks với Task 5. BM25 phù hợp với từ khóa chính xác, mã tài
+
 liệu và tên riêng. Output phải theo SearchResult và sort score giảm dần.
 """
+
 
 
 CORPUS: list[dict] = []
 
 
+from typing import List, Set, List
+import numpy as np
+
+def naive_tokenize_document(doc: str, sep_chars: Set[str]) -> np.ndarray:
+    return np.array([word for word in doc.lower().split(sep_chars) if word])
+
+
+def naive_compute_idf_each_word(term_frequency_matrix: np.ndarray, N_documents: int, word: str) -> float:
+    df = np.sum(term_frequency_matrix == word).astype(int)
+    return np.log((N_documents + 1) / (df + 1))  + 1 # smooth
+
+
+def naive_compute_idf(term_freq_mtx: np.ndarray, smooth: bool = false, smooth_factor = 0.5) -> np.ndarray:
+    N = term_freq_mtx.shape[0]
+    df = np.sum(term_freq_mtx > 0, axis=0).astype(int)
+    
+    if smooth:
+        return np.log((N - df + smooth_factor) / (df + smooth_factor))
+    else:
+        return np.log((N - df) / df)
+        
+def naive_compute_tf(seq_of_array: np.ndarray, n_vocab) -> np.ndarray:
+
+    vocab_ids = np.arange(n_vocab)
+
+    matches = seq_of_array[:, :, None] == vocab_ids
+
+    return np.sum(matches, axis=1).T # shape: (vocab_size, N_documents)
+
+class NaiveBM25:
+    def __init__(self, corpus: list[dict], sep_chars: set[str] = {' '}, k1 = 1.2, b = 0.75, smooth = True, smooth_factor = 0.5) -> None:
+        self.corpus = corpus
+        self.sep_chars = sep_chars
+        self.k1 = k1
+        self.b = b
+        self.smooth = smooth
+        self.smooth_factor = smooth_factor
+        self.tokenized_corpus = None
+        self.vocabulary = None
+        self.word2idx = None
+        self.idx2word = None
+        self.tf = None
+        self.idf = None
+        self.dl = None
+        self.avgdl = None
+        self.rarerity = None
+
+        self._preprocess()
+    def _preprocess(self) -> None:
+        self.tokenized_corpus = np.array([naive_tokenize_document(doc["content"], self.sep_chars) for doc in self.corpus])
+        self.vocabulary = np.union1d(*[np.unique(doc) for doc in self.tokenized_corpus])
+        self.word2idx = {word: idx for idx, word in enumerate(self.vocabulary)}
+        self.idx2word = {idx: word for word, idx in self.word2idx.items()}
+        self.tf = naive_compute_tf(np.array(self.tokenized_corpus), len(self.vocabulary))
+        self.idf = naive_compute_idf(self.tf, self.smooth, self.smooth_factor)
+        self.dl = np.array([len(doc) for doc in self.tokenized_corpus])
+        self.avgdl = np.mean(self.dl)
+
+        n_vocab = self.vocabulary.shape[0]
+        n_document = self.tokenized_corpus.shape[0]
+
+        self.rarerity = np.zeros((n_vocab, n_document))
+
+        for doc_id in range(n_document):
+            for token_id in self.tokenized_corpus[doc_id]:
+                self.rarerity[token_id, doc_id] = (self.tf[token_id, doc_id] * (self.k1 +1)) / (self.tf[token_id, doc_id] + self.k1 * (1 - self.b + self.b * self.dl[doc_id] / self.avgdl))
+
+    
+    
+    def compute_idx(self, query: str) -> np.ndarray:
+
+        tokenized_query = naive_tokenize_document(query, self.sep_chars)
+        
+        terms, freq = np.unique(tokenized_query, return_counts=True) # shape(terms) = len(unique(tokens_in_query))                                             
+        #                                                            # shape(freq) = len(unique(tokens_in_query))
+
+        valid_mask = np.array([t in self.word2idx for t in terms])
+
+        if not np.any(valid_mask):
+            return np.zeros(self.rarerity.shape[1]) 
+
+        valid_terms = terms[valid_mask]
+        valid_freq = freq[valid_mask]  # shape: (K_valid,)
+
+        term_idx = np.array([self.word2idx[t] for t in valid_terms])
+
+        term_weights = (valid_freq * self.idf[term_idx])[:, None] # shape: (K_valid, 1)
+
+        rarerity = self.rarerity[term_idx] # shape: (K_valid, N_document)
+
+        return np.sum(term_weights * rarerity, axis=0) # shape: (N_document,)
+
+
+    
 def build_bm25_index(corpus: list[dict]):
     """Tạo BM25 index từ cùng corpus chunks của Task 4."""
     # TODO: Tokenize và tạo BM25 index.

@@ -9,6 +9,7 @@ Lưu ý: RRF score chỉ phản ánh thứ hạng, không dùng để quyết đ
 -> Dùng Jina hoặc self host hoặc bất cứ công cụ nào bạn quen
 """
 
+import numpy as np
 
 def rerank_rrf(
     ranked_lists: list[list[dict]],
@@ -18,20 +19,33 @@ def rerank_rrf(
     """Fuse nhiều ranked lists và trả hybrid SearchResult."""
     # TODO: Implement RRF.
     #
-    scores = {}
-    items = {}
-    for ranked_list in ranked_lists:
-        for rank, item in enumerate(ranked_list, 1):
-            item_id = item["id"]
-            scores[item_id] = scores.get(item_id, 0.0) + 1 / (k + rank)
-            items[item_id] = item
+
+    doc_idx = set([item["id"] for ranked_list in ranked_lists for item in ranked_list])
+    doc2idx = {doc_id: idx for idx, doc_id in enumerate(doc_idx)}
+
+    idx2doc = {idx: doc_id for doc_id, idx in doc2idx.items()}
+
+    ranked_tensors = np.zeros((len(ranked_lists), len(doc_idx))) # #shape = (#metrics x #docs)
+
+    for metric_id in range(len(ranked_lists)):
+        for rank_of_doc, doc in enumerate(ranked_lists[metric_id], 1):
+            doc_id = doc["id"]
+            doc_idx_in_tensor = doc2idx[doc_id]
+            ranked_tensors[metric_id, doc_idx_in_tensor] = 1 / (k + rank_of_doc)
+
+    sum_tensors = ranked_tensors.sum(axis = 0)
+    ranked_ids = np.argsort(sum_tensors)[::-1][:top_k]
     
-    ranked_ids = sorted(scores, key=scores.get, reverse=True)
     results = []
-    for item_id in ranked_ids[:top_k]:
-        result = items[item_id].copy()
-        result["score"] = scores[item_id]
-        result["retrieval_method"] = "hybrid"
+    for item_id in ranked_ids:
+        doc_id = idx2doc[item_id]
+        result = {
+            "id": doc_id,
+            "score": sum_tensors[item_id],
+            "retrieval_method": "hybrid",
+            "content": CORPUS[doc_id]["content"],
+            "metadata": CORPUS[doc_id]["metadata"],
+        }
         results.append(result)
     return results
 
