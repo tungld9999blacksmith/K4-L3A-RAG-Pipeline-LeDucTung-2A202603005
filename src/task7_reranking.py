@@ -20,33 +20,56 @@ def rerank_rrf(
     # TODO: Implement RRF.
     #
 
-    doc_idx = set([item["id"] for ranked_list in ranked_lists for item in ranked_list])
-    doc2idx = {doc_id: idx for idx, doc_id in enumerate(doc_idx)}
+    doc_ids = set([item["id"] for ranked_list in ranked_lists for item in ranked_list])
+
+    n_doc = len(doc_ids)
+
+    doc2idx = {doc_id: idx for idx, doc_id in enumerate(doc_ids)}
 
     idx2doc = {idx: doc_id for doc_id, idx in doc2idx.items()}
 
-    ranked_tensors = np.zeros((len(ranked_lists), len(doc_idx))) # #shape = (#metrics x #docs)
+    ranked_tensors = np.zeros((len(ranked_lists), len(doc_ids)), dtype = np.float64) # #shape = (#metrics x #docs)
 
+    doc_indicies = []
+    metric_indicies = []
+
+    ranks_in_metric = []
+
+    # flattening indexes for vectorzing computation
     for metric_id in range(len(ranked_lists)):
-        for rank_of_doc, doc in enumerate(ranked_lists[metric_id], 1):
-            doc_id = doc["id"]
-            doc_idx_in_tensor = doc2idx[doc_id]
-            ranked_tensors[metric_id, doc_idx_in_tensor] = 1 / (k + rank_of_doc)
+
+        n_doc = len(ranked_lists[metric_id])
+
+        doc_indicies.extend([doc2idx[item["id"]] for item in ranked_lists[metric_id]])
+
+        metric_indicies.extend([metric_id] * n_doc)
+
+        ranks_in_metric.extend(range(1, n_doc + 1))
+    
+    
+    doc_indicies = np.array(doc_indicies, type = np.intp)
+    metric_indicies = np.array(metric_indicies, type = np.intp)
+    ranks_in_metric = np.array(ranks_in_metric, type = np.float64)
+
+    ranked_tensors[metric_indicies, doc_indicies] = 1.0 / (k + ranks_in_metric)
 
     sum_tensors = ranked_tensors.sum(axis = 0)
-    ranked_ids = np.argsort(sum_tensors)[::-1][:top_k]
-    
-    results = []
-    for item_id in ranked_ids:
-        doc_id = idx2doc[item_id]
-        result = {
-            "id": doc_id,
+
+    if top_k < n_doc:
+        top_k_indicies = np.argpartition(sum_tensors, -top_k)[-top_k:]
+        top_k_indicies = top_k_indicies[np.argsort(-sum_tensors[top_indicies])]
+    else:
+        top_k_indicies = np.argsort(-sum_tensors)
+
+    results = [
+        {
+            "id": idx2doc[item_id],
             "score": sum_tensors[item_id],
             "retrieval_method": "hybrid",
-            "content": CORPUS[doc_id]["content"],
-            "metadata": CORPUS[doc_id]["metadata"],
         }
-        results.append(result)
+
+        for item_id in top_k_indicies
+    ]
     return results
 
 
