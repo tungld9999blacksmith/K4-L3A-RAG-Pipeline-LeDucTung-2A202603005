@@ -1,0 +1,172 @@
+[
+  {
+    "title": "Một vài suy nghĩ về công tác bảo tồn di tích Huế",
+    "url": "https://dsvh.gov.vn/Upload/files/Tap%20chi%20DSVH/So%203/0305_Vai%20suy%20nghi%20ve%20cong%20tac%20bao%20ton%20di%20tich%20Hue.pdf",
+    "location": "hue",
+    "category": "heritage",
+    "document_type": "factual_pdf",
+    "source_authority": "Cục Di sản văn hóa",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Bản tin di sản Hội An số 56 năm 2021",
+    "url": "https://hoianheritage.net/uploads/download/files/ban-tin-56-2021-1.pdf",
+    "location": "hoi_an",
+    "category": "heritage",
+    "document_type": "factual_pdf",
+    "source_authority": "Trung tâm Quản lý Bảo tồn Di sản Văn hóa Hội An",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Bảo tồn toàn diện và bền vững di sản văn hóa Huế",
+    "url": "https://dsvh.gov.vn/Upload/files/Tap%20chi%20DSVH/So%2045/4502_Bao%20ton%20toan%20dien%20va%20ben%20vung%20di%20san%20van%20hoa%20Hue.pdf",
+    "location": "hue",
+    "category": "heritage",
+    "document_type": "factual_pdf",
+    "source_authority": "Cục Di sản Văn hóa",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Hue",
+    "url": "https://vietnam.travel/places-to-go/central-vietnam/hue",
+    "location": "hue",
+    "category": "tourist_attraction",
+    "document_type": "factual_web",
+    "source_authority": "Vietnam National Authority of Tourism",
+    "date_crawled": "2026-09-20",
+    "language": "en"
+  },
+  {
+    "title": "Complex of Hué Monuments",
+    "url": "https://whc.unesco.org/en/list/678/",
+    "location": "hue",
+    "category": "heritage",
+    "document_type": "factual_web",
+    "source_authority": "UNESCO",
+    "date_crawled": "2026-09-20",
+    "language": "en"
+  },
+  {
+    "title": "Da Nang",
+    "url": "https://vietnam.travel/places-to-go/central-vietnam/da-nang",
+    "location": "da_nang",
+    "category": "culture",
+    "document_type": "factual_web",
+    "source_authority": "Vietnam National Authority of Tourism",
+    "date_crawled": "2026-09-20",
+    "language": "en"
+  },
+  {
+    "title": "Hoi An",
+    "url": "https://vietnam.travel/places-to-go/central-vietnam/hoi-an",
+    "location": "hoi_an",
+    "category": "culture",
+    "document_type": "factual_web",
+    "source_authority": "Vietnam National Authority of Tourism",
+    "date_crawled": "2026-09-20",
+    "language": "en"
+  },
+  {
+    "title": "Hoi An Ancient Town",
+    "url": "https://whc.unesco.org/en/list/948/",
+    "location": "hoi_an",
+    "category": "heritage",
+    "document_type": "factual_web",
+    "source_authority": "UNESCO",
+    "date_crawled": "2026-09-20",
+    "language": "en"
+  },
+  {
+    "title": "My Son Sanctuary",
+    "url": "https://whc.unesco.org/en/list/949/",
+    "location": "hoi_an",
+    "category": "heritage",
+    "document_type": "factual_web",
+    "source_authority": "UNESCO",
+    "date_crawled": "2026-09-20",
+    "language": "en"
+  },
+  {
+    "title": "Thái Miếu dần hồi sinh",
+    "url": "https://huengaynay.vn/van-hoa-nghe-thuat/thai-mieu-dan-hoi-sinh-169834.html",
+    "location": "hue",
+    "category": "heritage",
+    "document_type": "news",
+    "source_authority": "Báo Thừa Thiên Huế (Huế Ngày Nay)",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Hơn 300 nghìn lượt người tham gia Lễ hội Di sản và Âm nhạc Quốc tế Huế",
+    "url": "https://huengaynay.vn/van-hoa-nghe-thuat/thong-tin-van-hoa/hon-300-nghin-luot-nguoi-tham-gia-le-hoi-di-san-va-am-nhac-quoc-te-hue-169926.html",
+    "location": "hue",
+    "category": "festival",
+    "document_type": "news",
+    "source_authority": "Báo Thừa Thiên Huế (Huế Ngày Nay)",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Đánh thức nguồn lực từ di sản Huế",
+    "url": "https://huengaynay.vn/du-lich/danh-thuc-nguon-luc-tu-di-san-hue-169742.html",
+    "location": "hue",
+    "category": "culture",
+    "document_type": "news",
+    "source_authority": "Báo Thừa Thiên Huế (Huế Ngày Nay)",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Để du lịch Đà Nẵng nâng tầm thương hiệu",
+    "url": "https://baodanang.vn/de-du-lich-da-nang-nang-tam-thuong-hieu-3351817.html",
+    "location": "da_nang",
+    "category": "tourist_attraction",
+    "document_type": "news",
+    "source_authority": "Báo Đà Nẵng",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Đà Nẵng triển khai chính sách hỗ trợ bảo tồn, phát huy nghệ thuật Bài Chòi",
+    "url": "https://baovanhoa.vn/van-hoa/da-nang-trien-khai-chinh-sach-ho-tro-bao-ton-phat-huy-nghe-thuat-bai-choi-266423.html",
+    "location": "da_nang",
+    "category": "culture",
+    "document_type": "news",
+    "source_authority": "Báo Văn Hóa",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Nối miền xanh Cẩm Thanh - Trà Quế",
+    "url": "https://baodanang.vn/noi-mien-xanh-cam-thanh-tra-que-3352579.html",
+    "location": "hoi_an",
+    "category": "culture",
+    "document_type": "news",
+    "source_authority": "Báo Đà Nẵng",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Hội An Đông định hình 3 không gian du lịch, hướng tới điểm đến xanh",
+    "url": "https://baovanhoa.vn/du-lich/hoi-an-dong-dinh-hinh-3-khong-gian-du-lich-huong-toi-diem-den-xanh-266898.html",
+    "location": "hoi_an",
+    "category": "tourist_attraction",
+    "document_type": "news",
+    "source_authority": "Báo Văn Hóa",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  },
+  {
+    "title": "Huế Di tích và Con Người - Hoàng Phủ Ngọc Tường",
+    "url": "https://tieulun.hd.free.fr/download.php?file=HueDiTichVaConNguoi_HoangPhuNgocTuong",
+    "location": "hue",
+    "category": "heritage",
+    "document_type": "factual_docx",
+    "source_authority": "Hoàng Phủ Ngọc Tường",
+    "date_crawled": "2026-09-20",
+    "language": "vi"
+  }
+]

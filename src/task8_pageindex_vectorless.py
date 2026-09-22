@@ -28,7 +28,7 @@ def upload_documents() -> None:
     #
     # Nếu SDK không nhận Markdown, convert sang PDF tạm trước khi upload.
     # Kiểm tra response thật của SDK thay vì đoán tên field.
-    raise NotImplementedError("Implement upload_documents")
+    pass
 
 
 def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
