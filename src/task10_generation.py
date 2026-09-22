@@ -30,6 +30,8 @@ LLM_MODEL = os.getenv("LLM_MODEL", "")
 SYSTEM_PROMPT = """Trả lời chỉ từ context được cung cấp.
 Mỗi khẳng định phải có citation. Nếu thiếu evidence, hãy từ chối xác minh."""
 
+SAFE_REFUSAL = "Tôi không thể xác minh thông tin này từ nguồn hiện có."
+
 
 DEFAULT_MODELS = {
     "openai": "gpt-4o-mini",
@@ -39,7 +41,7 @@ DEFAULT_MODELS = {
 
 
 def _model_name() -> str:
-    return LLM_MODEL or DEFAULT_MODEL.get(LLM_PROVIDER, "")
+    return LLM_MODEL or DEFAULT_MODELS.get(LLM_PROVIDER, "")
 
 
 def reorder_for_llm(chunks: list[dict]) -> list[dict]:
@@ -61,6 +63,7 @@ def format_context(chunks: list[dict]) -> str:
     parts = []
     for index, chunk in enumerate(chunks, 1):
         metadata = chunk["metadata"]
+        print(metadata)
         parts.append(
             f"[Document {index} | Title: {metadata['title']} | "
             f"Source: {metadata['source']}]\n{chunk['content']}"
@@ -103,7 +106,7 @@ def call_llm(system_prompt: str, user_message: str) -> str:
 
         client = genai.Client()
         response = client.models.generate_content(
-            model=model,
+            model=model_name,
             contents=user_message,
             config=types.GenerateContentConfig(
                 system_instruction=system_prompt,
@@ -118,7 +121,7 @@ def call_llm(system_prompt: str, user_message: str) -> str:
 
         client = anthropic.Anthropic()
         response = client.messages.create(
-            model=model,
+            model=model_name,
             max_tokens=16000,
             # Claude Opus 5 đã bỏ temperature/top_p: gửi vào sẽ bị lỗi 400.
             system=system_prompt,
@@ -150,7 +153,7 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
     chunks = retrieve(query, top_k=top_k)
     if not chunks:
         return {
-            "answer": f"I dont verify with the source",
+            "answer": "I dont verify with the source",
             "sources": [],
             "retrieval_source": "none",
         }

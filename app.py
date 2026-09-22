@@ -4,8 +4,14 @@ from pathlib import Path
 import streamlit as st
 from dotenv import load_dotenv
 
+import traceback
+
 # Tải cấu hình biến môi trường
 load_dotenv()
+
+import logging 
+
+logger = logging.getLogger(__name__)
 
 # Cấu hình giao diện Streamlit
 st.set_page_config(
@@ -291,9 +297,17 @@ if query:
                     })
 
                 except Exception as e:
+
+                    logger.exception("Error: %s", e, exc_info=True)
+
+                    print(traceback.format_exc())
+
+                    print()
                     err_msg = (
                         f"⚠️ Đã xảy ra lỗi khi xử lý câu hỏi: `{str(e)}`.\n\n"
                         "Vui lòng kiểm tra lại cấu hình API key trong `.env` hoặc thử lại với câu hỏi khác."
                     )
+
+
                     st.error(err_msg)
                     st.session_state.messages.append({"role": "assistant", "content": err_msg})

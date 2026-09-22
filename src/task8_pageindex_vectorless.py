@@ -12,10 +12,12 @@ PageIndex là dịch vụ ngoài: cần timeout và xử lý lỗi để pipelin
 
 import os
 from pathlib import Path
+from venv import logger
 
 from dotenv import load_dotenv
 
 from pageindex import PageIndexClient
+import json
 
 
 load_dotenv()
@@ -71,15 +73,15 @@ def upload_documents() -> None:
             logger.info(f"Document {source} already uploaded (ID: {cache[source]}). Skipping.")
             continue
         
-        response = client.submit_document(file_path = str(path))
+        response = page_idx_client.submit_document(file_path = str(path))
         doc_id = response.get("id") or response.get("doc_id")
 
         if not doc_id:
-            print(f"Cannot retrieve the document id for {path.name}: {response}")
+            logger.info(f"Cannot retrieve the document id for {path.name}: {response}")
             continue
 
         cache[path.name] = doc_id
-        print(f"Uploaded: {path.name} -> {doc_id}")
+        logger.info(f"Uploaded: {path.name} -> {doc_id}")
     
     _save_cache(cache)
 
@@ -114,7 +116,7 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
     
     page_idx_client: PageIndexClient = _setup_pageindex_client()
 
-    doc_ids = list(cache.values())
+    #doc_ids = list(cache.values())
 
     results: list[dict] = []
 

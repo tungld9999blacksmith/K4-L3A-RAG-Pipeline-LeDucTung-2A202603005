@@ -13,6 +13,16 @@ chạy lại pipeline không tạo dữ liệu trùng. Task 5 phải dùng chung
 
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+from typing import List
+
+from google import genai
+
+from huggingface_hub import InferenceClient
+
+import os
+
 
 STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
 CHROMA_DIR = Path(__file__).parent.parent / "storage" / "chroma"
@@ -30,26 +40,27 @@ EMBEDDING_DIM = 1024
 
 COLLECTION_NAME = "rag_documents"
 
-from dotenv import load_dotenv
 
 
-def embed_texts(texts: list[str]) -> list[list[float]]:
-    # TODO: Dispatch theo EMBEDDING_PROVIDER trong .env.
-    #
-    # Provider local gợi ý:
-    # from sentence_transformers import SentenceTransformer
-    # model = SentenceTransformer(EMBEDDING_MODEL)
-    # return model.encode(texts).tolist()
-    import os 
-    from google import genai
+def embed_texts(texts: List[str]) -> List[List[float]]:
+    api_key = os.getenv("HF_TOKEN")
+    embed_model = os.getenv("HF_EMBEDDING_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 
-    api_key = os.getenv("GEMINI_API_KEY")
-    embed_model = os.getenv("EMBEDDING_MODEL", "gemini-embedding-exp-03-07")
+    client = InferenceClient(provider="hf-inference", api_key=api_key)
 
-    client = genai.Client(api_key = api_key)
+    BATCH_SIZE = 100
+    all_embeddings = []
 
-    response = client.models.embed_content(model = embed_model, contents = texts)
-    return [embed.values for embed in response.embeddings]
+    for i in range(0, len(texts), BATCH_SIZE):
+        batch = texts[i:i + BATCH_SIZE]
+
+        embeddings = client.feature_extraction(batch, model = embed_model)
+
+        all_embeddings.extend(
+            embeddings
+        )
+
+    return all_embeddings
 
 
 def get_collection():

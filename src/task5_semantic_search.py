@@ -18,6 +18,8 @@ def semantic_search(query: str, top_k: int = 10) -> list[dict]:
         n_results=top_k,
         include=["documents", "metadatas", "distances"],
     )
+
+    print(response["metadatas"])
     results = []
     for item_id, content, metadata, distance in zip(
         response["ids"][0],

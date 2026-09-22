@@ -22,7 +22,7 @@ def rerank_rrf(
     # TODO: Implement RRF.
     #
 
-    doc_ids = set([item["id"] for ranked_list in ranked_lists for item in ranked_list])
+    doc_ids = {item["id"] for ranked_list in ranked_lists for item in ranked_list}
 
     n_doc = len(doc_ids)
 
@@ -49,9 +49,9 @@ def rerank_rrf(
         ranks_in_metric.extend(range(1, n_doc + 1))
     
     
-    doc_indicies = np.array(doc_indicies, type = np.intp)
-    metric_indicies = np.array(metric_indicies, type = np.intp)
-    ranks_in_metric = np.array(ranks_in_metric, type = np.float64)
+    doc_indicies = np.array(doc_indicies, dtype = np.intp)
+    metric_indicies = np.array(metric_indicies, dtype = np.intp)
+    ranks_in_metric = np.array(ranks_in_metric, dtype = np.float64)
 
     ranked_tensors[metric_indicies, doc_indicies] = 1.0 / (k + ranks_in_metric)
 
@@ -59,14 +59,14 @@ def rerank_rrf(
 
     if top_k < n_doc:
         top_k_indicies = np.argpartition(sum_tensors, -top_k)[-top_k:]
-        top_k_indicies = top_k_indicies[np.argsort(-sum_tensors[top_indicies])]
+        top_k_indicies = top_k_indicies[np.argsort(-sum_tensors[top_k_indicies])]
     else:
         top_k_indicies = np.argsort(-sum_tensors)
 
-    def retrieve_remain_fields(doc_id: str) -> Tuple[str, dict]:
+    def retrieve_remain_fields(idx: str) -> Tuple[str, dict]:
         for ranked_row in ranked_lists:
             for item in ranked_row:
-                if item["id"] == doc_id:
+                if item["id"] == idx2doc[idx]:
                     return item["content"], item["metadata"]
         return "", {}
 
